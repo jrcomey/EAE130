@@ -1,0 +1,77 @@
+...Comp Geom...
+15 Num Comps
+33 Total Num Meshes
+49178 Total Num Tris
+
+Theo_Area   Wet_Area   Theo_Vol    Wet_Vol  Name
+  122.799    120.462     72.810     72.449  StackGeom      
+    1.858      0.000      0.077      0.000  Pilot          
+   14.096      6.843      1.173      0.578  WingGeom       
+   14.096      6.843      1.173      0.578  WingGeom       
+   16.237     16.237      1.007      1.007  RearR          
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+   16.237     15.145      1.007      0.953  FrontR         
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+   16.237     15.168      1.007      0.954  FrontL         
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+   16.237     16.237      1.007      1.007  RearL          
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+    0.382      0.382      0.003      0.003  PropGeom       
+-------------------------------------------------
+  226.958    206.098     79.327     77.591  Totals         
+
+Tag_Theo_Area   Tag_Wet_Area    Tag_Name
+       61.399         60.230    StackGeom_Surf0
+       61.399         60.232    StackGeom_Surf1
+        1.858          0.000    Pilot_Surf0    
+       14.096          6.843    WingGeom_Surf0 
+       14.096          6.843    WingGeom_Surf1 
+       16.237         16.237    RearR_Surf0    
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+       16.237         15.145    FrontR_Surf0   
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+       16.237         15.168    FrontL_Surf0   
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+       16.237         16.237    RearL_Surf0    
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+        0.382          0.382    PropGeom_Surf0 
+        0.382          0.382    PropGeom_Surf1 
+        0.382          0.382    PropGeom_Surf2 
+WARNING: 1 open meshes merged
+     Merged: StackGeom

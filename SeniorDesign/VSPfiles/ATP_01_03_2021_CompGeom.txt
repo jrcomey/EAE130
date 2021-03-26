@@ -1,0 +1,122 @@
+...Comp Geom...
+23 Num Comps
+56 Total Num Meshes
+100050 Total Num Tris
+
+Theo_Area   Wet_Area   Theo_Vol    Wet_Vol  Name
+   53.897     52.768     26.652     26.640  MainBody       
+   12.989     12.597      0.806      0.798  FrontL         
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+   12.989     12.586      0.806      0.797  FrontR         
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+   12.989     12.985      0.806      0.806  BackL          
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+   12.989     12.985      0.806      0.806  BackR          
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.260      0.002      0.002  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    0.260      0.246      0.002      0.001  PropGeom       
+    6.423      5.983      0.313      0.298  WingGeom       
+    6.423      5.983      0.313      0.298  WingGeom       
+    1.104      0.000      0.083      0.000  PassengerSeating
+    1.219      0.000      0.047      0.000  PassengerSeating
+    1.104      0.000      0.083      0.000  PassengerSeating
+    1.219      0.000      0.047      0.000  PassengerSeating
+    1.104      0.000      0.083      0.000  PassengerSeating
+    1.219      0.000      0.047      0.000  PassengerSeating
+    1.104      0.000      0.083      0.000  PassengerSeating
+    1.219      0.000      0.047      0.000  PassengerSeating
+    1.858      0.000      0.077      0.000  Passenger      
+    1.858      0.000      0.077      0.000  Passenger      
+    1.858      0.000      0.077      0.000  Passenger      
+    1.858      0.000      0.077      0.000  Passenger      
+    1.104      0.000      0.083      0.000  PilotSeat      
+    1.219      0.000      0.047      0.000  PilotSeat      
+    1.858      0.000      0.077      0.000  HumanGeom      
+   13.370      0.000      3.281      0.000  H2 Fuel        
+    1.777      0.000      0.060      0.000  Parachute      
+-------------------------------------------------
+  163.085    123.983     34.923     30.489  Totals         
+
+Tag_Theo_Area   Tag_Wet_Area    Tag_Name
+       53.897         52.768    MainBody_Surf0 
+       12.989         12.597    FrontL_Surf0   
+        0.260          0.246    PropGeom_Surf0 
+        0.260          0.246    PropGeom_Surf1 
+        0.260          0.246    PropGeom_Surf2 
+        0.260          0.246    PropGeom_Surf3 
+        0.260          0.260    PropGeom_Surf0 
+        0.260          0.260    PropGeom_Surf1 
+        0.260          0.260    PropGeom_Surf2 
+        0.260          0.260    PropGeom_Surf3 
+       12.989         12.586    FrontR_Surf0   
+        0.260          0.246    PropGeom_Surf0 
+        0.260          0.246    PropGeom_Surf1 
+        0.260          0.246    PropGeom_Surf2 
+        0.260          0.246    PropGeom_Surf3 
+        0.260          0.260    PropGeom_Surf0 
+        0.260          0.260    PropGeom_Surf1 
+        0.260          0.260    PropGeom_Surf2 
+        0.260          0.260    PropGeom_Surf3 
+       12.989         12.985    BackL_Surf0    
+        0.260          0.246    PropGeom_Surf0 
+        0.260          0.246    PropGeom_Surf1 
+        0.260          0.246    PropGeom_Surf2 
+        0.260          0.246    PropGeom_Surf3 
+        0.260          0.260    PropGeom_Surf0 
+        0.260          0.260    PropGeom_Surf1 
+        0.260          0.260    PropGeom_Surf2 
+        0.260          0.260    PropGeom_Surf3 
+       12.989         12.985    BackR_Surf0    
+        0.260          0.260    PropGeom_Surf0 
+        0.260          0.260    PropGeom_Surf1 
+        0.260          0.260    PropGeom_Surf2 
+        0.260          0.260    PropGeom_Surf3 
+        0.260          0.246    PropGeom_Surf0 
+        0.260          0.246    PropGeom_Surf1 
+        0.260          0.246    PropGeom_Surf2 
+        0.260          0.246    PropGeom_Surf3 
+        6.423          5.983    WingGeom_Surf0 
+        6.423          5.983    WingGeom_Surf1 
+        1.104          0.000    PassengerSeating_Surf0
+        1.219          0.000    PassengerSeating_Surf1
+        1.104          0.000    PassengerSeating_Surf2
+        1.219          0.000    PassengerSeating_Surf3
+        1.104          0.000    PassengerSeating_Surf4
+        1.219          0.000    PassengerSeating_Surf5
+        1.104          0.000    PassengerSeating_Surf6
+        1.219          0.000    PassengerSeating_Surf7
+        1.858          0.000    Passenger_Surf0
+        1.858          0.000    Passenger_Surf0
+        1.858          0.000    Passenger_Surf0
+        1.858          0.000    Passenger_Surf0
+        1.104          0.000    PilotSeat_Surf0
+        1.219          0.000    PilotSeat_Surf1
+        1.858          0.000    HumanGeom_Surf0
+       13.370          0.000    H2 Fuel_Surf0  
+        1.777          0.000    Parachute_Surf0

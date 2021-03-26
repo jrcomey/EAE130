@@ -1,0 +1,191 @@
+9
+#
+GroupName = Fixed_Group
+NumberOfComponents = 11
+11
+12
+13
+14
+15
+9
+10
+16
+17
+18
+19
+GeometryIsFixed = 1
+GeometryIsDynamic = 0
+GeometryIsARotor = 0
+RotorDiameter = 0.000000
+OVec = 0.000000 0.000000 0.000000
+RVec = 0.000000 0.000000 0.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 0.000000
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+1
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 0.000000 -2.000000 -0.500000
+RVec = 0.000000 0.000000 1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+2
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 0.000000 -2.000000 -1.000000
+RVec = 0.000000 0.000000 -1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+3
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 0.000000 2.000000 -0.500000
+RVec = 0.000000 0.000000 -1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+4
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 0.000000 2.000000 -1.000000
+RVec = 0.000000 0.000000 1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+5
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 5.000000 -2.000000 1.000000
+RVec = 0.000000 0.000000 -1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+6
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 5.000000 -2.000000 0.500000
+RVec = 0.000000 0.000000 1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+7
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 5.000000 2.000000 0.500000
+RVec = 0.000000 0.000000 1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
+#
+GroupName = PropGeom
+NumberOfComponents = 1
+8
+GeometryIsFixed = 0
+GeometryIsDynamic = 0
+GeometryIsARotor = 1
+RotorDiameter = 1.900000
+OVec = 5.000000 2.000000 1.000000
+RVec = 0.000000 0.000000 -1.000000
+Velocity = 0.000000 0.000000 0.000000
+Acceleration = 0.000000 0.000000 0.000000
+Omega = 209.439510
+Mass = 0.000000
+Ixx = 0.000000
+Iyy = 0.000000
+Izz = 0.000000
+Ixy = 0.000000
+Ixz = 0.000000
+Iyz = 0.000000
