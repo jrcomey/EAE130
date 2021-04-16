@@ -3,7 +3,7 @@
 Example Code
 """
 
-import UAVsym as usy
+import UAVsym_new as usy
 import numpy as np
 import time
 import matplotlib.pyplot as plt
@@ -11,33 +11,21 @@ import matplotlib as mpl
 import seaborn as sns
 import montecarlofunctions as mcf
 from jrc import *
+import copy
 
-run_time = 30
+def InsertVector(vec, psi, theta, phi):
+    vec_local = copy.deepcopy(vec)
+    vec_local = vec_local.reshape((3,1))
+    vec_rotated = usy.Local2Inertial(vec_local, phi, theta, psi)
+    vec_rotated = vec_rotated.reshape(vec.shape)
+    return vec_rotated
 
-# Defining motor thrust curve
-
-max_thrust = 3.8E3   # Newtons
-
-omega = np.linspace(0, 2500, 1000)  # Values between 0 and 1300 rad/s
-thrust = max_thrust - max_thrust*np.exp(-omega/100)
-
-# Creating base motor object
-
-motor = usy.Motor(1E3)  # Set motor object with 100ms max PWM signal width
-motor.SetTau(0.1)  # Set motor time constant in seconds
-motor.SetThrustCurve(omega, thrust)  # Set motor thrust curve
-
-# Defining UAV inertial properties
-mass = 1958 + 8*(40)  # kg
-# mass = 2200
-Ixx = 1000  # kg-m^2
-Iyy = 800 # kg-m^2
-Izz = 800  # kg-m^2
-
-
-num_motors = 8  # Number of UAV motors
-clock_speed = 2.1E9  # Clock speed in Hz
-
+def RotateMotors(angle_sets, mixer):
+    i = 0
+    for psi, theta, phi in zip(angle_sets[:, 0], angle_sets[:, 1], angle_sets[:, 2]):
+        mixer[3:6, i] = InsertVector(mixer[3:6, i], psi, theta, phi)
+        i += 1
+    return mixer
 
 mixer = np.array([[0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                   [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
@@ -51,6 +39,51 @@ mixer = np.array([[0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                   [2, -2, 2, -2, 2, -2, 2, -2],  # X Moments (Roll)
                   [2.5, 2.5, -2.5, -2.5, 2.5, 2.5, -2.5, -2.5],  # Y Moments (Pitch)
                   [-1, 1, 1, -1, 1, -1, -1, 1]], dtype=float)  # Z Moments (Yaw)
+
+
+gamma = 15
+
+angle_sets = np.array([[-45, 0, gamma],
+                       [45, 0, -gamma],
+                       [45, 0, gamma],
+                       [-45, 0, -gamma],
+                       [-45, 0, gamma],
+                       [45, 0, -gamma],
+                       [45, 0, gamma],
+                       [-45, 0, -gamma]])
+
+angle_sets = np.deg2rad(angle_sets)
+
+# angle_sets *= 0
+
+mixer = RotateMotors(angle_sets, mixer)
+
+run_time = 11
+
+# Defining motor thrust curve
+
+max_thrust = 3.8E3   # Newtons
+
+omega = np.linspace(0, 1300, 1000)  # Values between 0 and 1300 rad/s
+thrust = max_thrust - max_thrust*np.exp(-omega/100)
+
+# Creating base motor object
+
+motor = usy.Motor(1E3)  # Set motor object with 100ms max PWM signal width
+motor.SetTau(0.0001)  # Set motor time constant in seconds
+motor.SetThrustCurve(omega, thrust)  # Set motor thrust curve
+
+# Defining UAV inertial properties
+mass = 2200  # kg
+# mass = 2200
+Ixx = 500  # kg-m^2
+Iyy = 500 # kg-m^2
+Izz = 500  # kg-m^2
+
+
+num_motors = 8  # Number of UAV motors
+clock_speed = 2.1E9  # Clock speed in Hz
+
 
 drone = usy.UAV(mass, Ixx, Iyy, Izz, num_motors,
                 motor, mixer, clock_speed)
@@ -79,8 +112,8 @@ K_D = K_D_factor * (0.6 * T_roll * Ixx)  # D constant, angular
 K_P_pos = K_P_pos_factor * 1.2 * T/L * mass  # P constant, altitude
 K_D_pos = K_D_pos_factor * (0.6 * T * mass)  # D constant, altitude
 
-K_P_pos_xy = 0.1*K_P  # XY translational P constant
-K_D_pos_xy = 0.3*K_D   # XY translational D constant
+K_P_pos_xy = 0 * 0.1*K_P  # XY translational P constant
+K_D_pos_xy = 0 * 0.3*K_D   # XY translational D constant
 
 drone.SetPIDPD(K_P,
                K_I,
@@ -94,23 +127,23 @@ drone.SetPIDPD(K_P,
 # Set initial state to showcase control
 drone.Reset()
 
-# drone.state_vector[0] = 10  # x
-# drone.state_vector[1] = -15  # y
-# drone.state_vector[2] = 15  # z
-# drone.state_vector[3] = 0  # x'
-# drone.state_vector[4] = 0  #y'
-# drone.state_vector[5] = -2  # z'
-# drone.state_vector[6] = -np.pi  # roll
-# drone.state_vector[7] = 0.5*np.pi   # pitch
-# drone.state_vector[8] = 0.25*np.pi   # yaw
-# drone.state_vector[9] = -0.5   # roll dot
-# drone.state_vector[10] = 2   # pitch dot
-# drone.state_vector[11] = 0.5   # yaw dot
+drone.state_vector[0] = 0  # x
+drone.state_vector[1] = 0  # y
+drone.state_vector[2] = 0  # z
+drone.state_vector[3] = 0  # x'
+drone.state_vector[4] = 0  #y'
+drone.state_vector[5] = -2  # z'
+drone.state_vector[6] = 0.1  # roll
+drone.state_vector[7] = -0.1   # pitch
+drone.state_vector[8] = 0 # yaw
+drone.state_vector[9] = 0   # roll dot
+drone.state_vector[10] = 0   # pitch dot
+drone.state_vector[11] = 0   # yaw dot
 
 
-drone.final_state[2] = 0
+drone.final_state[2] = -5
 
-drone = mcf.RandomizeDronePosition(drone, 0, -np.pi)
+# drone = mcf.RandomizeDronePosition(drone, 0, -np.pi)
 # Main loop:
 tic = time.time()
 drone.RunSim(run_time)
@@ -160,13 +193,13 @@ angleplot.xaxis.set_major_formatter(seconds)
 angleplot.yaxis.set_major_formatter(radians)
 #%%###########################
 # Motor Signals
-fig, signalplot = plt.subplots()
-plothusly(signalplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Signal", datalabel='', title="Motor Signal Plot")
+# fig, signalplot = plt.subplots()
+# plothusly(signalplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Signal", datalabel='', title="Motor Signal Plot")
 
-for i, motor in enumerate(drone.motors):
-    plothus(signalplot, df["Time"], df[f"Motor {i} Signal"], datalabel=f"Motor {i} Signal")
+# for i, motor in enumerate(drone.motors):
+#     plothus(signalplot, df["Time"], df[f"Motor {i} Signal"], datalabel=f"Motor {i} Signal")
     
-signalplot.xaxis.set_major_formatter(seconds)
+# signalplot.xaxis.set_major_formatter(seconds)
 # signalplot.yaxis.set_major_formatter()
 
 #%%###########################
@@ -176,3 +209,24 @@ for i, motor in enumerate(drone.motors):
     plothus(thrustplot, df["Time"], df[f"Motor {i} Force"], datalabel=f"Motor {i} Thrust")
 thrustplot.xaxis.set_major_formatter(seconds)
 thrustplot.yaxis.set_major_formatter(newtons)
+
+#%%###########################
+
+# From stack overflow
+
+def bmatrix(a):
+    """Returns a LaTeX bmatrix
+
+    :a: numpy array
+    :returns: LaTeX bmatrix as a string
+    """
+    if len(a.shape) > 2:
+        raise ValueError('bmatrix can at most display two dimensions')
+    lines = str(a).replace('[', '').replace(']', '').splitlines()
+    rv = [r'\begin{bmatrix}']
+    rv += ['  ' + ' & '.join(l.split()) + r'\\' for l in lines]
+    rv +=  [r'\end{bmatrix}']
+    return '\n'.join(rv)
+
+# print(bmatrix(drone.control_mat) + '\n')
+

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep 15 18:35:29 2020
-
 @author: Jack Rhys Comey
 """
 
@@ -22,15 +21,12 @@ class Motor():
         """
         Initializes motor object with empty properties and sets maximum signal
         width
-
         Parameters
         ----------
         signal_width : Maximum PWM signal value
-
         Returns
         -------
         None.
-
         """
         self.signal_width = signal_width
         
@@ -45,15 +41,12 @@ class Motor():
     def SetTau(self, tau):
         """
         Sets motor time constant
-
         Parameters
         ----------
         tau : First order time constant in seconds
-
         Returns
         -------
         None.
-
         """
         self.tau = tau
 
@@ -62,16 +55,13 @@ class Motor():
         Defines thrust curve given thrust data using 6 degree polynomial fit.
         Defines max angular velocity and the signal conversion to omega
         constant.
-
         Parameters
         ----------
         omega : Angular velocity of motor in rad/s
         thrust : Thrust of motor in Newtons
-
         Returns
         -------
         None.
-
         """
         self.constants = np.polyfit(omega, thrust, 6)
         self.omega_max = np.max(omega)
@@ -80,16 +70,13 @@ class Motor():
     def InToOut(self, signal, dt):
         """
         Finds first order response of the motor given dt and input signal.
-
         Parameters
         ----------
         signal : Input signal
         dt : Change in time in seconds
-
         Returns
         -------
         None.
-
         """
         # Find current motor speed given signal and dt
         omega_set = self.omega_signal_convert * signal
@@ -105,15 +92,12 @@ class Motor():
         """
         Finds the force of the motor given the current angular velocity using
         6th degree polynomial fit.
-
         Parameters
         ----------
         omega : Angular velocity of the motor
-
         Returns
         -------
         None.
-
         """
         self.force = (self.constants[0]*omega**6
                       + self.constants[1]*omega**5
@@ -128,11 +112,9 @@ class Motor():
         """
         Checks properties of the motor to ensure that they haven't exceeded
         bounds
-
         Returns
         -------
         None.
-
         """
         if self.omega > self.omega_max:
             self.omega = self.omega_max
@@ -150,7 +132,6 @@ class UAV():
     def __init__(self, mass, Ixx, Iyy, Izz, num_motors, motor_obj, mixer, clock_speed):
         """
         Initializes and defines basic properties of an n-motor UAV
-
         Parameters
         ----------
         mass : Total mass of UAV in kg
@@ -159,11 +140,9 @@ class UAV():
         mixer : A 12x(num_motors) array defining the forces and moments
             exerted on each axis
         clock_speed : Clock speed of the flight computer
-
         Returns
         -------
         None.
-
         """
         # Motor setup
         
@@ -316,16 +295,13 @@ class UAV():
         """
         Duplicates motor objects into a list.
         Necessary for time-response modelling.
-
         Parameters
         ----------
         num_motors : Number of UAV motors.
         motor_obj : Pre-made motor object to be duplicated.
-
         Returns
         -------
         None.
-
         """
         self.motors = np.empty((num_motors, 1), dtype=object)
         for i in range(num_motors):
@@ -389,11 +365,9 @@ class UAV():
     def RunSimTimeStep(self):
         """
         Runs simulation at new time step for interval of t=dt
-
         Returns
         -------
         None.
-
         """
         self.MotorControl()
         self.Update()
@@ -401,11 +375,9 @@ class UAV():
     def MotorControl(self):
         """
         Determines motor signals in response to PID control loop.
-
         Returns
         -------
         None.
-
         """
         
         # Determines error vector, and updates error integral vector
@@ -450,7 +422,6 @@ class UAV():
         Returns
         -------
         None.
-
         """
         self.UpdateMotors()
         self.StateSpaceKinematics()
@@ -459,11 +430,9 @@ class UAV():
         """
         Determines current motor output, given input signal and motor time 
         constant.
-
         Returns
         -------
         None.
-
         """
         for i in range(len(self.motors)):
             self.motors[i].item().InToOut(self.signal[i], self.dt)
@@ -472,11 +441,9 @@ class UAV():
     def StateSpaceKinematics(self):
         """
         Performs dynamics modelling for time step dt.
-
         Returns
         -------
         None.
-
         """
         # X'(t) calculation
         xdot = (
@@ -501,11 +468,9 @@ class UAV():
     def RecordData(self):
         """
         Records data at current time step into storage matrix.
-
         Returns
         -------
         None.
-
         """
         motor_forces = np.zeros((1, len(self.motors)))
         for i in range(len(self.motors)):
@@ -520,12 +485,10 @@ class UAV():
     def ExportData(self):
         """
         Exports data from storage matrix into pandas dataframe.
-
         Returns
         -------
         TYPE
             DESCRIPTION.
-
         """
         columns =  ["Time",
                     "X Position",
@@ -557,11 +520,9 @@ class UAV():
     def SignalCheck(self):
         """
         Limits PWM motor signals to pre-defined bounds and converts to integer
-
         Returns
         -------
         None.
-
         """
         for i in range(len(self.signal)):
             if self.signal[i] > self.motors[i].item().signal_width:
@@ -575,11 +536,9 @@ class UAV():
     def AngleCheck(self):
         """
         Checks Euler angles to see if they're out of bounds, and corrects them'
-
         Returns
         -------
         None.
-
         """
         while (self.state_vector[6] > np.pi
                or self.state_vector[6] < -1*np.pi
@@ -612,7 +571,6 @@ class UAV():
     def SetPIDPD(self, P, I, D, P_pos, D_pos, P_pos_xy, D_pos_xy, meter_per_rad=100):
         """
         Sets PID constants and PD constants for hover function
-
         Parameters
         ----------
         P : Proportional constant for angular control
@@ -620,11 +578,9 @@ class UAV():
         D : Derivative constant for angular control
         P_pos : Proportioal constant for altitude control
         D_pos : Derivative constant for altitude control
-
         Returns
         -------
         None.
-
         """
         # Set PID values as object values
         self.K_P = P
@@ -656,16 +612,13 @@ class UAV():
         replaces it.
         
         Function is in case you want to directly alter the control matrix.
-
         Parameters
         ----------
         control_mat_new : New control matrix. Must be same shape as existing
             version.
-
         Returns
         -------
         None.
-
         """
         if self.control_mat.shape == control_mat_new.shape:
             self.control_mat = control_mat_new
@@ -675,11 +628,9 @@ class UAV():
     def Reset(self):
         """
         Resets all state values to zero
-
         Returns
         -------
         None.
-
         """
         
         self.ClearStorage()
@@ -708,13 +659,11 @@ class UAV():
 def TransformationMatrix(phi, theta, psi):
     """
     Transforms 6 DOF state vector from body axis to earth axis
-
     Parameters
     ----------
     phi : Roll angle in radians
     theta : Pitch angle in radians
     psi : Yaw angle in radians
-
     Returns
     -------
     array : 12x12 transformation matrix
@@ -740,161 +689,3 @@ def AngleCorrect(angle, min_ang, max_ang):
     else:
         pass
     return angle
-
-def Autotune(drone, rise_time, os_percent_input, exp_time_allowed, *, tol=0.05, max_tests=100):
-    
-    # Resets position if previously simulated
-    drone.Reset()
-    
-    # Set height
-    drone.final_state[2] = -10
-    
-    # Flag for loop
-    done = False
-    
-    # Ticker counter
-    ticker = 0
-    # While the flag is unset
-    while done == False:
-        # K_D loop
-        
-        # Set target
-        drone.final_state[2] = -10
-        # Run Simulation
-        drone.RunSim(exp_time_allowed)
-        
-        # Export data
-        df = drone.ExportData()
-        
-        # Print header
-        print("\n" + f"K_P Loop: Run {ticker+1} Completed")
-        
-        # Normalize Z position to up
-        df["Z Position"] *= -1
-        
-        # Find rise time
-        for i, t in enumerate(df["Time"]):
-            if df["Z Position"][i] > 0.9*abs(drone.final_state[2]):
-                rise_time_exp = t
-                break
-            else:
-                pass
-        
-        # Find peak
-        flag = False
-        for i, t in enumerate(df["Time"]):    
-            
-            if i > 0:
-                if df["Z Position"][i] > df["Z Position"][i-1]:
-                    flag = True
-            
-            if flag == True:
-                if df["Z Position"][i] < df["Z Position"][i-1]:
-                    peak = df["Z Position"][i]
-                    break
-        
-        # Find overshoot, report data
-        overshoot = (peak/abs(drone.final_state[2]) * 100).item()
-        print(f"Rise_time = {rise_time_exp:.4f} s")
-        print(f"Peak = {peak:.2f} m")
-        print(f"OS% = {overshoot:.2f}%")
-        
-        # Iterate K_P value to match rise time
-        if abs(rise_time - rise_time_exp)/rise_time < tol:
-            break
-        elif abs(rise_time - rise_time_exp)/rise_time > tol:
-            drone.K_P_pos += (rise_time_exp - rise_time)
-            print(f"New K_P_pos: {drone.K_P_pos:.4f}")
-        else:
-            pass
-        
-        # Set new control matrix
-        drone.SetPIDPD(drone.K_P,
-                       0,
-                       drone.K_D,
-                       drone.K_P_pos,
-                       0,
-                       0,
-                       0)
-        # Reset, check to see how long this has been going on for
-        drone.Reset()
-        ticker += 1
-        if ticker > max_tests:
-            print("Broken!")
-            break
-    
-    done = False
-    ticker = 0
-    while done == False:
-        
-        # K_D loop
-        
-        # Set target
-        drone.final_state[2] = -10
-        # Run Simulation
-        drone.RunSim(exp_time_allowed)
-        
-        # Export data
-        df = drone.ExportData()
-        
-        # Print header
-        print("\n" + f"K_D Loop: Run {ticker+1} Completed")
-        
-        # Normalize Z position to up
-        df["Z Position"] *= -1
-        
-        # Find rise time
-        for i, t in enumerate(df["Time"]):
-            if df["Z Position"][i] > 0.9*abs(drone.final_state[2]):
-                rise_time_exp = t
-                break
-            else:
-                pass
-        
-        # Find peak
-        flag = False
-        for i, t in enumerate(df["Time"]):    
-            
-            if i > 0:
-                if df["Z Position"][i] > df["Z Position"][i-1]:
-                    flag = True
-            
-            if flag == True:
-                if df["Z Position"][i] < df["Z Position"][i-1]:
-                    peak = df["Z Position"][i]
-                    break
-        
-        # Find overshoot, report data
-        overshoot = (peak/abs(drone.final_state[2]) * 100).item()
-        print(f"Rise_time = {rise_time_exp:.4f} s")
-        print(f"Peak = {peak:.2f} m")
-        print(f"OS% = {overshoot:.2f}%")
-        
-        # Find new K_D values
-        if abs(os_percent_input - overshoot) < tol:
-            break
-        elif abs(os_percent_input - overshoot) > tol:
-            drone.K_D_pos += (overshoot - os_percent_input)/1E2
-            print(f"New K_D_pos: {drone.K_D_pos:.4f}")
-        
-        # Set new control matrix
-        drone.SetPIDPD(drone.K_P,
-                       0,
-                       drone.K_D,
-                       drone.K_P_pos,
-                       drone.K_D_pos,
-                       drone.K_P_pos_xy,
-                       drone.K_D_pos_xy)
-        # Reset, check to see how long this has been going on for
-        drone.Reset()
-        ticker += 1
-        # if ticker > max_tests:
-        #     print("Broken!")
-        #     break
-    
-    print("\n\n" + "Done Constant Information")
-    print(f"K_P_pos: {drone.K_P_pos}")
-    print(f"K_D_pos: {drone.K_D_pos}")
-    
-    
-    return drone
