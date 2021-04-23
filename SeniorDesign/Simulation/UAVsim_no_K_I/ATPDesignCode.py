@@ -27,6 +27,11 @@ def RotateMotors(angle_sets, mixer):
         i += 1
     return mixer
 
+I = np.array([[500, 0, 0],
+              [0, 500, 0],
+              [0, 0, 500]])
+
+
 mixer = np.array([[0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                   [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                   [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
@@ -41,7 +46,7 @@ mixer = np.array([[0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                   [-1, 1, 1, -1, 1, -1, -1, 1]], dtype=float)  # Z Moments (Yaw)
 
 
-gamma = 15
+gamma = 0
 
 angle_sets = np.array([[-45, 0, gamma],
                        [45, 0, -gamma],
@@ -56,37 +61,38 @@ angle_sets = np.deg2rad(angle_sets)
 
 # angle_sets *= 0
 
-mixer = RotateMotors(angle_sets, mixer)
+# mixer = RotateMotors(angle_sets, mixer)
 
-run_time = 11
+run_time = 20
 
 # Defining motor thrust curve
 
-max_thrust = 3.8E3   # Newtons
+max_thrust = 10E3   # Newtons
 
-omega = np.linspace(0, 1300, 1000)  # Values between 0 and 1300 rad/s
+omega = np.linspace(0, 2500, 1000)  # Values between 0 and 1300 rad/s
 thrust = max_thrust - max_thrust*np.exp(-omega/100)
 
 # Creating base motor object
 
 motor = usy.Motor(1E3)  # Set motor object with 100ms max PWM signal width
-motor.SetTau(0.0001)  # Set motor time constant in seconds
+motor.SetTau(0.001)  # Set motor time constant in seconds
 motor.SetThrustCurve(omega, thrust)  # Set motor thrust curve
 
 # Defining UAV inertial properties
-mass = 2200  # kg
-# mass = 2200
-Ixx = 500  # kg-m^2
-Iyy = 500 # kg-m^2
-Izz = 500  # kg-m^2
+mass = 1958 + 8*(40)# mass = 2200
+Ixx = 100  # kg-m^2
+Iyy = 100 # kg-m^2
+Izz = 100  # kg-m^2
 
 
 num_motors = 8  # Number of UAV motors
 clock_speed = 2.1E9  # Clock speed in Hz
 
 
-drone = usy.UAV(mass, Ixx, Iyy, Izz, num_motors,
-                motor, mixer, clock_speed)
+# drone = usy.UAV(mass, Ixx, Iyy, Izz, num_motors,
+#                 motor, mixer, clock_speed)
+
+drone = usy.UAV(mass, I, num_motors, motor, mixer, clock_speed)
 
 drone.Setdt(0.001)  # Set time step size
 
@@ -112,8 +118,8 @@ K_D = K_D_factor * (0.6 * T_roll * Ixx)  # D constant, angular
 K_P_pos = K_P_pos_factor * 1.2 * T/L * mass  # P constant, altitude
 K_D_pos = K_D_pos_factor * (0.6 * T * mass)  # D constant, altitude
 
-K_P_pos_xy = 0 * 0.1*K_P  # XY translational P constant
-K_D_pos_xy = 0 * 0.3*K_D   # XY translational D constant
+K_P_pos_xy = 0.1*K_P  # XY translational P constant
+K_D_pos_xy = 0.3*K_D   # XY translational D constant
 
 drone.SetPIDPD(K_P,
                K_I,
@@ -123,6 +129,17 @@ drone.SetPIDPD(K_P,
                K_P_pos_xy,
                K_D_pos_xy)
 
+LQR = np.loadtxt("Matlab/K.csv", dtype=float, delimiter=',')
+LQR *= 1E10
+# for i in range(12):
+#     for j in range(12):
+#         if LQR[i, j] < 1E-3:
+#             LQR[i,j] = 0
+#         else:
+#             pass
+# print(LQR)
+# drone.AlterControlMat(LQR)
+# drone.K_I = 0
 #%%###########################
 # Set initial state to showcase control
 drone.Reset()
@@ -133,15 +150,15 @@ drone.state_vector[2] = 0  # z
 drone.state_vector[3] = 0  # x'
 drone.state_vector[4] = 0  #y'
 drone.state_vector[5] = -2  # z'
-drone.state_vector[6] = 0.1  # roll
-drone.state_vector[7] = -0.1   # pitch
-drone.state_vector[8] = 0 # yaw
-drone.state_vector[9] = 0   # roll dot
-drone.state_vector[10] = 0   # pitch dot
-drone.state_vector[11] = 0   # yaw dot
+drone.state_vector[6] = 3  # roll
+drone.state_vector[7] = -3   # pitch
+drone.state_vector[8] = 3 # yaw
+# drone.state_vector[9] = 0   # roll dot
+# drone.state_vector[10] = 0   # pitch dot
+# drone.state_vector[11] = 0   # yaw dot
 
 
-drone.final_state[2] = -5
+# drone.final_state[2] = -5
 
 # drone = mcf.RandomizeDronePosition(drone, 0, -np.pi)
 # Main loop:
@@ -193,22 +210,22 @@ angleplot.xaxis.set_major_formatter(seconds)
 angleplot.yaxis.set_major_formatter(radians)
 #%%###########################
 # Motor Signals
-# fig, signalplot = plt.subplots()
-# plothusly(signalplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Signal", datalabel='', title="Motor Signal Plot")
+fig, signalplot = plt.subplots()
+plothusly(signalplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Signal", datalabel='', title="Motor Signal Plot")
 
-# for i, motor in enumerate(drone.motors):
-#     plothus(signalplot, df["Time"], df[f"Motor {i} Signal"], datalabel=f"Motor {i} Signal")
+for i, motor in enumerate(drone.motors):
+    plothus(signalplot, df["Time"], df[f"Motor {i} Signal"], datalabel=f"Motor {i} Signal")
+# plothus(signalplot, df["Time"], df[f"Motor 0 Signal"], datalabel=f"Motor 0 Signal")
     
-# signalplot.xaxis.set_major_formatter(seconds)
-# signalplot.yaxis.set_major_formatter()
+signalplot.xaxis.set_major_formatter(seconds)
 
 #%%###########################
-fig, thrustplot = plt.subplots()
-plothusly(thrustplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Thrust", datalabel='', title="Motor Thrust Plot")
-for i, motor in enumerate(drone.motors):
-    plothus(thrustplot, df["Time"], df[f"Motor {i} Force"], datalabel=f"Motor {i} Thrust")
-thrustplot.xaxis.set_major_formatter(seconds)
-thrustplot.yaxis.set_major_formatter(newtons)
+# fig, thrustplot = plt.subplots()
+# plothusly(thrustplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Thrust", datalabel='', title="Motor Thrust Plot")
+# for i, motor in enumerate(drone.motors):
+#     plothus(thrustplot, df["Time"], df[f"Motor {i} Force"], datalabel=f"Motor {i} Thrust")
+# thrustplot.xaxis.set_major_formatter(seconds)
+# thrustplot.yaxis.set_major_formatter(newtons)
 
 #%%###########################
 

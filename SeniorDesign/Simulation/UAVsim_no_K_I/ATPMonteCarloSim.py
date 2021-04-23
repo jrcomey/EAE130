@@ -21,24 +21,47 @@ from jrc import *
 from montecarlofunctions import *
 import multiprocessing
 import pandas as pd
-import functools
 import copy
 from scipy.fft import fft, fftfreq
+import os
 #%%###########################
 
 # Design Variables (Touch these ones)
 
-num_iterations = 30
+num_iterations = 100
 max_random_pos = 0
-max_att = np.pi
+max_att = 1*np.pi
 sim_time = 60
 mute = True
-alpha_val = 0.5
-# gamma = 0
+alpha_val = 0.8
+n = 5
+gamma_list = np.linspace(0, 30, 2)
+misc_plots = False
+aircraft_names = ["Blizzard"]
+thrust_max = 3.8E3
 
 #%%###########################
 
-def RunMC(drone, max_random_pos, max_att, sim_time, mute, alpha_val, procnum,):
+def RunMC(drone, max_random_pos, max_att, sim_time, mute, alpha_val, procnum):
+    """
+    Runs a single randomized Simulation
+
+    Parameters
+    ----------
+    drone : UAV object
+    max_random_pos : Maximum random translational position
+    max_att : Maximum random rotational position
+    sim_time : Simulated time
+    mute : Print reports on/off
+    alpha_val : Transparancy of lines on plots
+    procnum : What number iteration it is
+
+    Returns
+    -------
+    df : TYPE
+        DESCRIPTION.
+
+    """
     tic = time.time()
     drone.Reset()
     drone = RandomizeDronePosition(drone, max_random_pos, mag_att=max_att)
@@ -50,134 +73,16 @@ def RunMC(drone, max_random_pos, max_att, sim_time, mute, alpha_val, procnum,):
     df = drone.ExportData()
     return df
     # return iter_count, tictoc, posplot, attplot
-    
-def FFTAnalysisOld(df_dict, pos_freq_plot, freq_plot):
-    for i, df in enumerate(df_dict.values()):
-        # df = return_dict.values()[i]
-        print(f"Analyzing {i}...")
-        if i == 0:
-            N = len(df["Time"])
-            
-            # xpos
-            yf = fft(df["X Position"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            pos_freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[0],
-                           label="X Position",
-                           alpha=alpha_val)
-            
-            # ypos
-            yf = fft(df["Y Position"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            pos_freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[2],
-                           label="Y Position",
-                           alpha=alpha_val)
-            
-            # zpos
-            yf = fft(df["Z Position"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            pos_freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[3],
-                           label="Z Position",
-                           alpha=alpha_val)
-            
-            # Pitch
-            yf = fft(df["Pitch"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[0],
-                           label="Pitch",
-                           alpha=alpha_val)
-            
-            # Yaw
-            yf = fft(df["Yaw"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[2],
-                           label="Yaw",
-                           alpha=alpha_val)
-            
-            # Roll
-            yf = fft(df["Roll"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[3],
-                           label="Roll",
-                           alpha=alpha_val)
-            
-        else:
-            N = len(df["Time"])
-            
-            # xpos
-            yf = fft(df["X Position"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            pos_freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[0],
-                           alpha=alpha_val)
-            
-            # ypos
-            yf = fft(df["Y Position"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            pos_freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[2],
-                           alpha=alpha_val)
-            
-            # zpos
-            yf = fft(df["Z Position"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            pos_freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[3],
-                           alpha=alpha_val)
-            
-            # Pitch
-            yf = fft(df["Pitch"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[0],
-                           alpha=alpha_val)
-            
-            # Yaw
-            yf = fft(df["Yaw"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[2],
-                           alpha=alpha_val)
-            
-            # Roll
-            yf = fft(df["Roll"].to_numpy())
-            xf = fftfreq(N, drone.dt)[:N//2]
-            
-            freq_plot.plot(xf,
-                           2.0/N * np.abs(yf[0:N//2]),
-                           color=colors[3],
-                           alpha=alpha_val)
-            
-    return pos_freq_plot, freq_plot
 
 def FFTAnalysis(df_dict, pos_freq_plot, freq_plot):
+    
+    global xpos_freq
+    global ypos_freq
+    global zpos_freq
+    global pitch_freq
+    global roll_freq
+    global yaw_freq
+
     xpos_freq = 0
     ypos_freq = 0
     zpos_freq = 0
@@ -185,8 +90,6 @@ def FFTAnalysis(df_dict, pos_freq_plot, freq_plot):
     roll_freq = 0
     yaw_freq = 0
     for i, df in enumerate(df_dict.values()):
-        # df = return_dict.values()[i]            
-        # xpos
         xpos_freq += fft(df["X Position"].to_numpy())
         
                     # ypos
@@ -207,6 +110,13 @@ def FFTAnalysis(df_dict, pos_freq_plot, freq_plot):
         N = len(df["Time"])
         xf = fftfreq(N, drone.dt)[:N//2]
     
+    xpos_freq = np.abs(xpos_freq[0:N//2])
+    ypos_freq = np.abs(ypos_freq[0:N//2])
+    zpos_freq = np.abs(zpos_freq[0:N//2])
+    pitch_freq = np.abs(pitch_freq[0:N//2])
+    yaw_freq = np.abs(yaw_freq[0:N//2])
+    roll_freq = np.abs(roll_freq[0:N//2])
+    
     xpos_freq /= i+1
     ypos_freq /= i+1
     zpos_freq /= i+1
@@ -214,51 +124,62 @@ def FFTAnalysis(df_dict, pos_freq_plot, freq_plot):
     roll_freq /= i+1
     yaw_freq /= i+1
     
+    xpos_freq /= np.max(np.abs(xpos_freq))
+    ypos_freq /= np.max(np.abs(ypos_freq))
+    zpos_freq /= np.max(np.abs(zpos_freq))
+    pitch_freq /= np.max(np.abs(pitch_freq))
+    roll_freq /= np.max(np.abs(roll_freq))
+    yaw_freq /= np.max(np.abs(yaw_freq))
+    
     alpha_val = 1.0
     pos_freq_plot.plot(xf,
-                   2.0/N * np.abs(xpos_freq[0:N//2]),
-                   color=colors[0],
+                   xpos_freq,
+                   color=blue,
                    label="X Position",
                    alpha=alpha_val)
     
 
     
     pos_freq_plot.plot(xf,
-                   2.0/N * np.abs(ypos_freq[0:N//2]),
-                   color=colors[2],
+                   ypos_freq,
+                   color=green,
                    label="Y Position",
                    alpha=alpha_val)
     
 
     
     pos_freq_plot.plot(xf,
-                   2.0/N * np.abs(zpos_freq[0:N//2]),
-                   color=colors[3],
+                   zpos_freq,
+                   color=red,
                    label="Z Position",
                    alpha=alpha_val)
     
 
     
     freq_plot.plot(xf,
-                   2.0/N * np.abs(pitch_freq[0:N//2]),
-                   color=colors[0],
+                   pitch_freq,
+                   color=blue,
                    label="Pitch",
                    alpha=alpha_val)
     
     
     freq_plot.plot(xf,
-                   2.0/N * np.abs(yaw_freq[0:N//2]),
-                   color=colors[2],
+                   yaw_freq,
+                   color=red,
                    label="Yaw",
                    alpha=alpha_val)
             
     freq_plot.plot(xf,
-                   2.0/N * np.abs(roll_freq[0:N//2]),
-                   color=colors[3],
+                   roll_freq,
+                   color=green,
                    label="Roll",
                    alpha=alpha_val)
-            
-    return pos_freq_plot, freq_plot
+    
+    new_row = {"pitch_peak": xf[np.where(pitch_freq == np.max(pitch_freq))[0]].item(),
+               "yaw_peak": xf[np.where(yaw_freq == np.max(yaw_freq))[0]].item(),
+               "roll_peak": xf[np.where(roll_freq == np.max(roll_freq))[0]].item()}
+                
+    return pos_freq_plot, freq_plot, new_row
     
 def AnalyzeResults(df_dict, posplot, attplot):
     
@@ -275,69 +196,69 @@ def AnalyzeResults(df_dict, posplot, attplot):
             # Xpos
             posplot.plot(df["Time"],
                           df["X Position"],
-                          color=colors[0],
+                          color=blue,
                           label="X Position",
                           alpha=alpha_val)
             # Y Pos
             posplot.plot(df["Time"],
                           df["Y Position"],
-                          color=colors[2],
+                          color=green,
                           label="Y Position",
                           alpha=alpha_val)
             # Z Plot
             posplot.plot(df["Time"],
                           df["Z Position"],
-                          color=colors[3],
+                          color=red,
                           label="Z Position",
                           alpha=alpha_val)
             # Pitch
             attplot.plot(df["Time"],
                           np.rad2deg(df["Pitch"]),
-                          color=colors[0],
+                          color=blue,
                           label="Pitch",
                           alpha=alpha_val)
             # Yaw
             attplot.plot(df["Time"],
                           np.rad2deg(df["Yaw"]),
-                          color=colors[2],
+                          color=red,
                           label="Yaw", 
                           alpha=alpha_val)
             # Roll
             attplot.plot(df["Time"],
                           np.rad2deg(df["Roll"]),
-                          color=colors[3],
+                          color=green,
                           label="Roll",
                           alpha=alpha_val)
             
         else:
             posplot.plot(df["Time"],
                           df["X Position"],
-                          color=colors[0],
+                          color=blue,
                           alpha=alpha_val)
             posplot.plot(df["Time"],
                           df["Y Position"],
-                          color=colors[2],
+                          color=green,
                           alpha=alpha_val)
             posplot.plot(df["Time"],
                           df["Z Position"],
-                          color=colors[3],
+                          color=red,
                           alpha=alpha_val)
             # Pitch
             attplot.plot(df["Time"],
                           np.rad2deg(df["Pitch"]),
-                          color=colors[0],
+                          color=blue,
                           alpha=alpha_val)
             # Yaw
             attplot.plot(df["Time"],
                           np.rad2deg(df["Yaw"]),
-                          color=colors[2],
+                          color=red,
                           alpha=alpha_val)
             # Roll
             attplot.plot(df["Time"],
                           np.rad2deg(df["Roll"]),
-                          color=colors[3],
+                          color=green,
                           alpha=alpha_val)
-
+    
     # # Print Code
     # if mute == False:
     #     print(f"Simulation {iter_count+1} of {num_iterations} completed.")
@@ -355,17 +276,19 @@ def RunWithGamma(gamma, *, misc_plots=False):
     drone = DefineAircraft(gamma)
     
     # Plotting stuff
-    global colors
+    global colors, red, green, blue
     colors = sns.color_palette(palette="bright", n_colors=5)
+    blue = colors[0]
+    red = colors[1]
+    green = colors[2]
+    
     
     metres = mpl.ticker.EngFormatter("m")
     newtons = mpl.ticker.EngFormatter("N")
     seconds = mpl.ticker.EngFormatter("s")
     radians = mpl.ticker.EngFormatter("rad")
     degrees = mpl.ticker.EngFormatter(r"$\degree$")
-    
-    # Monte Carlo Loop:5
-    
+        
     def worker(procnum, return_dict):
         """worker function"""
         df = RunMC(drone, max_random_pos, max_att, sim_time, mute, alpha_val, procnum)
@@ -411,20 +334,31 @@ def RunWithGamma(gamma, *, misc_plots=False):
         attplot.yaxis.set_major_formatter(degrees)
     
     print("\n"); print("\n")
-    print("FINAL REPORT"); print("\n")
+    print("MC SIM REPORT"); print("\n")
     print(f"Total Time Elapsed: {total_real_time:.2f} seconds")
     print(f"Average Simulation Time: {total_real_time/num_iterations:.2f} seconds")
 
-    fig, freq_plot_arr = plt.subplots(2, 1)
+    fig, freq_plot_arr = plt.subplots(2, 1, figsize=(16, 13))
     pos_freq_plot = freq_plot_arr[0]
     freq_plot = freq_plot_arr[1]
-    pos_Freq_plot, freq_plot = FFTAnalysis(return_dict, pos_freq_plot, freq_plot)
+    pos_freq_plot, freq_plot, new_row = FFTAnalysis(return_dict, pos_freq_plot, freq_plot)
+    new_row['gamma'] = gamma
     pos_freq_plot.set_xscale("log")
     freq_plot.set_xscale("log")
     freq_plot.legend(loc='best')
+    pos_freq_plot.set_title("Position Fourier Transform")
+    freq_plot.set_title("Attitude Fourier Transform")
+    freq_plot.set_ylabel("Magnitude")
+    pos_freq_plot.set_ylabel("Magnitude")
+    freq_plot.set_xlabel("Frequency [Hz]")
     pos_freq_plot.legend(loc="best")
-    plt.suptitle(fr"$\gamma$ = {gamma}$\degree$")
+    Hz = mpl.ticker.EngFormatter(r"Hz")
+    pos_freq_plot.xaxis.set_major_formatter(Hz)
+    freq_plot.xaxis.set_major_formatter(Hz)
+    plt.suptitle(fr"{aircraft_name}: $\gamma$ = {gamma}$\degree$")
     plt.show()
+    
+    return fig, freq_plot_arr, new_row
 
 def InsertVector(vec, psi, theta, phi):
     vec_local = copy.deepcopy(vec)
@@ -437,10 +371,14 @@ def RotateMotors(angle_sets, mixer):
     i = 0
     for psi, theta, phi in zip(angle_sets[:, 0], angle_sets[:, 1], angle_sets[:, 2]):
         mixer[3:6, i] = InsertVector(mixer[3:6, i], psi, theta, phi)
+        local = np.cross(mixer[9:12, i], mixer[3:6, i])
+        mixer[9, i] = local[1]
+        mixer[10, i] = -local[0]
         i += 1
     return mixer
 
-def DefineAircraft(gamma):
+def DefineAircraft(gamma):    
+    # Define Motor Mixer
     mixer = np.array([[0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                       [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                       [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
@@ -454,9 +392,7 @@ def DefineAircraft(gamma):
                       [2.5, 2.5, -2.5, -2.5, 2.5, 2.5, -2.5, -2.5],  # Y Moments (Pitch)
                       [-1, 1, 1, -1, 1, -1, -1, 1]], dtype=float)  # Z Moments (Yaw)
     
-    
-    # gamma = 0
-    
+    # Set up array of how to rotate each motor
     angle_sets = np.array([[-45, 0, gamma],
                            [45, 0, -gamma],
                            [45, 0, gamma],
@@ -466,44 +402,39 @@ def DefineAircraft(gamma):
                            [45, 0, gamma],
                            [-45, 0, -gamma]])
     
+    # Convert into radians
     angle_sets = np.deg2rad(angle_sets)
     
-    # angle_sets *= 0
-    
+    # Rotate 'em
     mixer = RotateMotors(angle_sets, mixer)
-    
-    run_time = 15
-    
+        
     # Defining motor thrust curve
-    
-    max_thrust = 4.2E3   # Newtons
-    
-    omega = np.linspace(0, 1300, 1000)  # Values between 0 and 1300 rad/s
-    thrust = max_thrust - max_thrust*np.exp(-omega/100)
+    max_thrust = 10E3   # Newtons
+    omega = np.linspace(0, 2500, 1000)  # Values between 0 and 1300 rad/s
+    thrust = max_thrust - max_thrust*np.exp(-omega/100)  # The curve
     
     # Creating base motor object
-    
-    motor = usy.Motor(1E3)  # Set motor object with 100ms max PWM signal width
-    motor.SetTau(0.0001)  # Set motor time constant in seconds
+    motor = usy.Motor(1E3)  # Set motor object with 1000ms max PWM signal width
+    motor.SetTau(0.001)  # Set motor time constant in seconds
     motor.SetThrustCurve(omega, thrust)  # Set motor thrust curve
     
     # Defining UAV inertial properties
-    mass = 2200  # kg
-    # mass = 2200
-    Ixx = 500  # kg-m^2
-    Iyy = 500 # kg-m^2
-    Izz = 500  # kg-m^2
-    
-    
+    mass = 2200
+    I = np.array([[500, 0, 0],
+                  [0, 500, 0],
+                  [0, 0, 500]])
+    Ixx = I[0,0]
+    Iyy = I[1,1]
+    Izz = I[2,2]
     num_motors = 8  # Number of UAV motors
     clock_speed = 2.1E9  # Clock speed in Hz
-    
+
+    # Make the drone, global variable for analysis
     global drone
-    drone = usy.UAV(mass, Ixx, Iyy, Izz, num_motors,
-                    motor, mixer, clock_speed)
-    
+    drone = usy.UAV(mass, I, num_motors, motor, mixer, clock_speed)
     drone.Setdt(0.001)  # Set time step size
     
+    # State-feedback tuning
     # Ziegler-Nichols Tuning Rule
     
     T = 100
@@ -539,106 +470,42 @@ def DefineAircraft(gamma):
 
     return drone
 #%%##########################
-
-gamma_list = [0, 5, 10, 15]
-
-for gamma in gamma_list:
-    RunWithGamma(gamma, misc_plots=False)
-
+column_names = ["gamma", "pitch_peak", "yaw_peak", "roll_peak"]
+runs_df = pd.DataFrame(columns=column_names)
+plot_list = []
+for aircraft_name in aircraft_names:
+    for gamma_ticker, gamma in enumerate(gamma_list):
+        fig, freq_plot_arr, new_row = RunWithGamma(gamma, misc_plots=misc_plots)
+        runs_df = runs_df.append(new_row, ignore_index=True)
+        plot_list.append(freq_plot_arr)
+        directory = f"Results/{aircraft_name}"
+        if os.path.isdir(directory) == False:
+            os.mkdir(directory)
+        fig.savefig(directory+f"/{aircraft_name}_time_{sim_time}_iters_{num_iterations}_gamma_{int(gamma)}")
+        
 #%%###########################
 
+# Plot Gamma Angles
+
+deg = mpl.ticker.EngFormatter(r"$\degree$")
+Hz = mpl.ticker.EngFormatter(r"Hz")
 
 
-# with multiprocessing.Pool() as pool:
-#     pool.map(MonteCarlo, [i for i in range(num_iterations)])
-
-# result_queue = multiprocessing.Queue()
-# montecarlos = [MonteCarlo(i) for i in range(num_iterations)]
-# jobs = [multiprocessing.Process(mc) for mc in montecarlos]
-# for job in jobs: job.start()
-# for job in jobs: job.join()
-# results = [result_queue.get() for mc in montecarlos]
-
-
-
-#%%###########################
+fig, gammaplot = plt.subplots()
+gammaplot.plot(runs_df.gamma, runs_df.pitch_peak, color=blue, label="Pitch Peak Frequency")
+gammaplot.plot(runs_df.gamma, runs_df.roll_peak, color=red, label="Roll Peak Frequency")
+gammaplot.plot(runs_df.gamma, runs_df.yaw_peak, color=green, label="Yaw Peak Frequency")
+gammaplot.set_title("Attitude Frequency Response Plot")
+gammaplot.set_xlabel(r"$\gamma$ [$\degree$]")
+gammaplot.set_ylabel(r"Peak Frequency [Hz]")
+gammaplot.xaxis.set_major_formatter(deg)
+gammaplot.yaxis.set_major_formatter(Hz)
+plt.legend(loc='best')
 
 
 
-
-#%%###########################
-
-# pos_freq_plot.set_xlim([0, 5])
-# freq_plot.set_xlim([0, 5])
-# Set initial state to showcase control
-
-# drone.Reset()
-
-# drone.state_vector[0] = 0
-# drone.state_vector[1] = 2
-# drone.state_vector[2] = 0
-# drone.state_vector[5] = -20
-# drone.state_vector[6] = 0
-# drone.state_vector[7] = 0.5
-# drone.state_vector[8] = 0
-
-# drone.final_state[2] = -100
-# # Main loop:
-# tic = time.time()
-# drone.RunSim(1)
-# toc = time.time()
-# tictoc = toc-tic
-# print(f"Simulation ran for {tictoc:.2f} seconds")
-# # Exports data to pandas dataframe
-# df = drone.ExportData()
-
-#%%###########################
-
-# # For plotting results only! Not contained in sample code.
-
-
-# # Position plot
-# fig, zplot = plt.subplots()
-# plothusly(zplot, df["Time"], df["Z Position"], 
-#           xtitle="Time in seconds",
-#           ytitle="Position in metres", 
-#           datalabel="Z Position", 
-#           title="NED Drone Position")
-# plothus(zplot, df["Time"], df["Y Position"], datalabel="Y Position")
-# plothus(zplot, df["Time"], df["X Position"], datalabel="X Position")
-
-# zplot.xaxis.set_major_formatter(seconds)
-# zplot.yaxis.set_major_formatter(meters)
-
-# # Attitude plots
-# fig, angleplot = plt.subplots()
-# plothusly(angleplot, df["Time"], df["Pitch"], 
-#           xtitle="Time in seconds",
-#           ytitle="Angle from neutral position in radians", 
-#           datalabel="Pitch", 
-#           title="NED Aircraft Attitude")
-# plothus(angleplot, df["Time"], df["Yaw"], datalabel="Yaw")
-# plothus(angleplot, df["Time"], df["Roll"], datalabel="Roll")
-# angleplot.xaxis.set_major_formatter(seconds)
-# angleplot.yaxis.set_major_formatter(radians)
-
-
-# # Motor Signals
-# fig, signalplot = plt.subplots()
-# plothusly(signalplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Signal", datalabel='', title="Motor Signal Plot")
-
-# for i, motor in enumerate(drone.motors):
-#     plothus(signalplot, df["Time"], df[f"Motor {i} Signal"], datalabel=f"Motor {i} Signal")
-    
-# signalplot.xaxis.set_major_formatter(seconds)
-# # signalplot.yaxis.set_major_formatter()
-
-    
-# fig, thrustplot = plt.subplots()
-# plothusly(thrustplot, 0, 0, xtitle=r"Time [s]", ytitle=r"Motor Thrust", datalabel='', title="Motor Thrust Plot")
-
-# for i, motor in enumerate(drone.motors):
-#     plothus(thrustplot, df["Time"], df[f"Motor {i} Force"], datalabel=f"Motor {i} Thrust")
-    
-# thrustplot.xaxis.set_major_formatter(seconds)
-# thrustplot.yaxis.set_major_formatter(newtons)
+"""
+Looking for:
+    Low magnitude, high frequency position response
+    High magnitude, low frequency attitude response
+"""
