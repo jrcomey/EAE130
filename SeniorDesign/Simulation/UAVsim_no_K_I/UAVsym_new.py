@@ -295,7 +295,7 @@ class UAV():
                                      [0],   # z
                                      [0],   # x'
                                      [0],   # y'
-                                     [9.805],   # z'
+                                     [0],   # z'
                                      [0],   # phi
                                      [0],   # theta
                                      [0],   # psi
@@ -513,6 +513,7 @@ class UAV():
                                        self.state_vector[7].item(),
                                        self.state_vector[8].item()).transpose(),
                          err_vec)
+
         # Err vec -> Motor forces
         err_vec = np.dot(self.control_mat,
                           err_vec)

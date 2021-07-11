@@ -28,16 +28,16 @@ import os
 
 # Design Variables (Touch these ones)
 
-num_iterations = 100
+num_iterations = 10
 max_random_pos = 0
-max_att = 1*np.pi
+max_att = np.deg2rad(20)
 sim_time = 60
-mute = True
-alpha_val = 0.8
+mute = False
+alpha_val = 0.5
 n = 5
-gamma_list = np.linspace(0, 30, 2)
-misc_plots = False
-aircraft_names = ["Blizzard"]
+gamma_list = [0]
+misc_plots = True
+aircraft_names = ["Blizzard Attitude Response"]
 thrust_max = 3.8E3
 
 #%%###########################
@@ -378,7 +378,7 @@ def RotateMotors(angle_sets, mixer):
     return mixer
 
 def DefineAircraft(gamma):    
-    # Define Motor Mixer
+
     mixer = np.array([[0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                       [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                       [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
@@ -388,53 +388,47 @@ def DefineAircraft(gamma):
                       [0, 0, 0, 0, 0, 0, 0, 0],  # Empty
                       [0, 0, 0, 0, 0, 0, 0, 0],  # Empty 
                       [0, 0, 0, 0, 0, 0, 0, 0],  # Empty 
-                      [2, -2, 2, -2, 2, -2, 2, -2],  # X Moments (Roll)
+                      [3, -3, 3, -3, 3, -3, 3, -3],  # X Moments (Roll)
                       [2.5, 2.5, -2.5, -2.5, 2.5, 2.5, -2.5, -2.5],  # Y Moments (Pitch)
                       [-1, 1, 1, -1, 1, -1, -1, 1]], dtype=float)  # Z Moments (Yaw)
     
-    # Set up array of how to rotate each motor
-    angle_sets = np.array([[-45, 0, gamma],
-                           [45, 0, -gamma],
-                           [45, 0, gamma],
-                           [-45, 0, -gamma],
-                           [-45, 0, gamma],
-                           [45, 0, -gamma],
-                           [45, 0, gamma],
-                           [-45, 0, -gamma]])
+    run_time = 60
     
-    # Convert into radians
-    angle_sets = np.deg2rad(angle_sets)
-    
-    # Rotate 'em
-    mixer = RotateMotors(angle_sets, mixer)
-        
     # Defining motor thrust curve
-    max_thrust = 10E3   # Newtons
-    omega = np.linspace(0, 2500, 1000)  # Values between 0 and 1300 rad/s
-    thrust = max_thrust - max_thrust*np.exp(-omega/100)  # The curve
+    
+    max_thrust = 3.8E3   # Newtons
+    
+    omega = np.linspace(0, 1300, 1000)  # Values between 0 and 1300 rad/s
+    b = 0.8
+    a = (max_thrust - b*np.max(omega)) / (np.max(omega)**2)
+    thrust = a*(omega)**2 + b*omega
     
     # Creating base motor object
+    
     motor = usy.Motor(1E3)  # Set motor object with 1000ms max PWM signal width
-    motor.SetTau(0.001)  # Set motor time constant in seconds
+    motor.SetTau(0.4)  # Set motor time constant in seconds
     motor.SetThrustCurve(omega, thrust)  # Set motor thrust curve
     
     # Defining UAV inertial properties
     mass = 2200
-    I = np.array([[500, 0, 0],
-                  [0, 500, 0],
-                  [0, 0, 500]])
+    I = np.array([[600, 0, 0],
+                  [0, 800, 0],
+                  [0, 0, 800]])
     Ixx = I[0,0]
     Iyy = I[1,1]
     Izz = I[2,2]
+    
     num_motors = 8  # Number of UAV motors
     clock_speed = 2.1E9  # Clock speed in Hz
-
-    # Make the drone, global variable for analysis
+    
+    
+    # drone = usy.UAV(mass, Ixx, Iyy, Izz, num_motors,
+    #                 motor, mixer, clock_speed)
     global drone
     drone = usy.UAV(mass, I, num_motors, motor, mixer, clock_speed)
+    
     drone.Setdt(0.001)  # Set time step size
     
-    # State-feedback tuning
     # Ziegler-Nichols Tuning Rule
     
     T = 100
@@ -443,22 +437,29 @@ def DefineAircraft(gamma):
     T_roll = 5
     L_roll = 2
     
-    K_P_factor = 60
-    K_D_factor = 40
+    K_P_factor = 0*60
+    K_D_factor = 0*40
     
     K_P_pos_factor = 4
-    K_I_factor = 0.48 #0.48
-    K_D_pos_factor = 1.3
+    K_I_factor = 0.3#0.48
+    K_D_pos_factor = 1.5 #1.3
     
     K_P = K_P_factor * (1.2 * T_roll/L_roll * Ixx)  # P constant, angular
     K_I = K_I_factor * 0.6 * T/L**2 # I constant, angular
     K_D = K_D_factor * (0.6 * T_roll * Ixx)  # D constant, angular
     
-    K_P_pos = K_P_pos_factor * 1.2 * T/L * mass  # P constant, altitude
-    K_D_pos = K_D_pos_factor * (0.6 * T * mass)  # D constant, altitude
+    # K_P_pos = K_P_pos_factor * 1.2 * T/L * mass  # P constant, altitude
+    # K_D_pos = K_D_pos_factor * (0.6 * T * mass)  # D constant, altitude
     
-    K_P_pos_xy = 0.1*K_P  # XY translational P constant
-    K_D_pos_xy = 0.3*K_D   # XY translational D constant
+    K_P_pos_xy = 0*0.1*K_P  # XY translational P constant
+    K_D_pos_xy = 0*0.3*K_D   # XY translational D constant
+    
+    K_P_pos = 105.6E3
+    K_D_pos = 198E3
+    
+    K_P = 0.18E3
+    K_I = 0.18 # 0
+    K_D = 1E3 # 1E3
     
     drone.SetPIDPD(K_P,
                    K_I,
@@ -502,6 +503,7 @@ gammaplot.xaxis.set_major_formatter(deg)
 gammaplot.yaxis.set_major_formatter(Hz)
 plt.legend(loc='best')
 
+fig.savefig(directory +f"{aircraft_name}_gamma_dist")
 
 
 """

@@ -8,6 +8,8 @@ Created on Sat Mar  6 14:04:19 2021
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import pandas as pd
+import numpy as np
 
 def plothusly(ax, x, y, *, xtitle='', ytitle='',
               datalabel='', title='', linestyle='-',
@@ -61,12 +63,12 @@ plt.style.use("seaborn-bright")
 
 
 params={#FONT SIZES
-    'axes.labelsize':30,#Axis Labels
-    'axes.titlesize':30,#Title
+    'axes.labelsize':45,#Axis Labels
+    'axes.titlesize':45,#Title
     'font.size':28,#Textbox
-    'xtick.labelsize':22,#Axis tick labels
-    'ytick.labelsize':22,#Axis tick labels
-    'legend.fontsize':24,#Legend font size
+    'xtick.labelsize':30,#Axis tick labels
+    'ytick.labelsize':30,#Axis tick labels
+    'legend.fontsize':30,#Legend font size
     'font.family':'sans-serif',
     'font.fantasy':'xkcd',
     'font.sans-serif':'Helvetica',
@@ -74,7 +76,7 @@ params={#FONT SIZES
     #AXIS PROPERTIES
     'axes.titlepad':2*6.0,#title spacing from axis
     'axes.grid':True,#grid on plot
-    'figure.figsize':(32, 16),#square plots
+    'figure.figsize':(16, 8),#square plots
     # 'savefig.bbox':'tight',#reduce whitespace in saved figures#LEGEND PROPERTIES
     'legend.framealpha':0.5,
     'legend.fancybox':True,
@@ -89,3 +91,15 @@ params={#FONT SIZES
 mpl.rcParams.update(params)
 
 #%%###########################
+
+df = pd.read_csv("ATP-XW_V8-Drag-Data - Sheet1.csv")
+fig, dragpolar = plt.subplots()
+plothusly(dragpolar, df.AoA, df.CD, 
+          marker='x', 
+          xtitle=r"Angle of Attack $\alpha$", 
+          ytitle = r"Drag Coefficienct $C_D$", 
+          title=r"ATP-XW Blizzard Drag Polar",
+          datalabel=r"$C_D$")
+
+rad_format = mpl.ticker.EngFormatter(unit=r"$\degree$")
+dragpolar.xaxis.set_major_formatter(rad_format)

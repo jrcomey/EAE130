@@ -45,12 +45,12 @@ motor_list = [
               ]
 
 params={#FONT SIZES
-    'axes.labelsize':30,#Axis Labels
-    'axes.titlesize':30,#Title
+    'axes.labelsize':45,#Axis Labels
+    'axes.titlesize':45,#Title
     'font.size':28,#Textbox
-    'xtick.labelsize':22,#Axis tick labels
-    'ytick.labelsize':22,#Axis tick labels
-    'legend.fontsize':24,#Legend font size
+    'xtick.labelsize':30,#Axis tick labels
+    'ytick.labelsize':30,#Axis tick labels
+    'legend.fontsize':30,#Legend font size
     'font.family':'sans-serif',
     'font.fantasy':'xkcd',
     'font.sans-serif':'Helvetica',
@@ -58,8 +58,7 @@ params={#FONT SIZES
     #AXIS PROPERTIES
     'axes.titlepad':2*6.0,#title spacing from axis
     'axes.grid':True,#grid on plot
-    'axes.prop_cycle': mpl.cycler('color', plt.cm.jet(np.linspace(0, 1, len(motor_list)))),
-    'figure.figsize':(24,16),#square plots
+    'figure.figsize':(16, 8),#square plots
     # 'savefig.bbox':'tight',#reduce whitespace in saved figures#LEGEND PROPERTIES
     'legend.framealpha':0.5,
     'legend.fancybox':True,
@@ -84,8 +83,10 @@ thr_format = mpl.ticker.EngFormatter(unit="N")
 
 
 # print(prop.head())
-fig, liftplot = plt.subplots(1, 2, figsize = (24, 16))
-plt.suptitle("Airfoil Test Data")
+fig, liftplot = plt.subplots(1, 2, figsize = (24, 8))
+plt.xlim([-0.25, 0.75])
+plt.ylim([0, 0.02])
+plt.suptitle("Airfoil Data")
 fig, cplot = plt.subplots()
 fig, betaplot = plt.subplots()
 # fig, tcplot = plt.subplots()
@@ -101,7 +102,10 @@ fig, coeffplot = plt.subplots()
 fig, thrustplot = plt.subplots()
 
 cplot.yaxis.set_major_formatter(ft_format)
+cplot.xaxis.set_major_formatter(ft_format)
+
 betaplot.yaxis.set_major_formatter(rad_format)
+betaplot.xaxis.set_major_formatter(ft_format)
 # powerplot.yaxis.set_major_formatter(pow_format)
 thrustplot.yaxis.set_major_formatter(thr_format)
 
@@ -154,7 +158,7 @@ prop["r"] = prop.R * prop.x
 prop["B"] = B * np.ones_like(x_list)
 prop["alpha_0"] = alpha_0 * np.ones_like(x_list)
 
-atmos.v_0 = 5.04
+atmos.v_0 = 6.527099999996534
 
 column_names = ["motor",
                     "C_T",
@@ -241,28 +245,28 @@ for motor in motor_list:
     dic["eta_P_max"] = np.max(mass_test.eta_P)
     airfoil_table = airfoil_table.append(dic, ignore_index=True)
     plothusly(cplot, prop.r, prop.c, 
-            xtitle=r"Fraction of Propeller Blade Propeller Length $r$", 
-            ytitle=r"Chord length $c$ $_{[m]}$", 
+            xtitle=r"Propeller Length $r$ $[m]$", 
+            ytitle=r"Chord length $c$ $[m]$", 
             title=r"ATP-XW Propeller: Chord Length $c$",
             datalabel=fr"{airfoil_name}")
     plothusly(betaplot, prop.r, np.rad2deg(prop.beta), 
-            xtitle=r"Propeller Length $r$", 
-            ytitle=r"Pitch Angle $\beta$ $_{[\degree]}$", 
+            xtitle=r"Propeller Length $r$ $[m]$", 
+            ytitle=r"Pitch Angle $\beta$ $[\degree]$", 
             title=r"ATP-XW Propeller: Pitch Angle $\beta$",
             datalabel=airfoil_name
             )
     # plothusly(tcplot, prop.x, prop.t_over_c,  
-    #         xtitle=r"Fraction of Propeller Blade Propeller Length $r$", 
+    #         xtitle=r"Fraction of Propeller Blade Propeller Length $r$ $[m]$", 
     #         ytitle=r"Propeller Thickness Fraction $\frac{t}{c}$", 
     #         title=r"ATP-XW Propeller: Blade $\frac{t}{c}$",
     #         datalabel=airfoil_name)
     plothusly(clplot, prop.r, prop.c_l, 
-            xtitle=r"Propeller Length $r$", 
+            xtitle=r"Propeller Length $r$ $[m]$", 
             ytitle=r"$C_l$", 
             title="ATP-XW Propeller: $C_l$",
             datalabel=airfoil_name)
     # plothusly(cDplot, prop.x, prop.c/prop.D, 
-    #           xtitle=r"Propeller Length $r$",
+    #           xtitle=r"Propeller Length $r$ $[m]$",
     #           ytitle=r"$\frac{c}{D}$",
     #           title=r"Propeller chord/diamter ratio",)
     

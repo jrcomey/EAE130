@@ -132,7 +132,7 @@ gearbox = 10
 
 RPM = 20E3 / gearbox # 2500
 
-mass = 1958 # 
+mass = 2200 # 
 g_0 = 9.81
 
 # 50 m**2 swept
@@ -343,7 +343,7 @@ print_col_ind = ["motor", "T", "TWR", "C_T", "Q", "P", "eta_P"]
 
 print_col = airfoil_table[print_col_ind]
 
-# print_col["Score"] = print_col.eta_P * (2 * print_col["T"] + print_col["TWR"])
+print_col["Score"] = print_col.eta_P * (2 * print_col["T"] + print_col["TWR"])
 
 print(print_col.to_latex(float_format="%.2f", index=False))
 print(f"V_0 = {atmos.v_0}")

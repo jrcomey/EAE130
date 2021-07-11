@@ -57,36 +57,36 @@ def plothus(ax, x, y, *, datalabel='', linestyle = '-',
 
     return out
 
-plt.style.use("default")
-plt.style.use("seaborn-bright")
+# plt.style.use("default")
+# plt.style.use("dark_background")
 
 
-params={#FONT SIZES
-    'axes.labelsize':30,#Axis Labels
-    'axes.titlesize':30,#Title
-    'font.size':28,#Textbox
-    'xtick.labelsize':22,#Axis tick labels
-    'ytick.labelsize':22,#Axis tick labels
-    'legend.fontsize':24,#Legend font size
-    'font.family':'sans-serif',
-    'font.fantasy':'xkcd',
-    'font.sans-serif':'Helvetica',
-    'font.monospace':'Courier',
-    #AXIS PROPERTIES
-    'axes.titlepad':2*6.0,#title spacing from axis
-    'axes.grid':True,#grid on plot
-    'figure.figsize':(16,8),#square plots
-    # 'savefig.bbox':'tight',#reduce whitespace in saved figures#LEGEND PROPERTIES
-    'legend.framealpha':0.5,
-    'legend.fancybox':True,
-    'legend.frameon':True,
-    'legend.numpoints':1,
-    'legend.scatterpoints':1,
-    'legend.borderpad':0.1,
-    'legend.borderaxespad':0.1,
-    'legend.handletextpad':0.2,
-    'legend.handlelength':1.0,
-    'legend.labelspacing':0,}
-mpl.rcParams.update(params)
+# params={#FONT SIZES
+#     'axes.labelsize':30,#Axis Labels
+#     'axes.titlesize':30,#Title
+#     'font.size':28,#Textbox
+#     'xtick.labelsize':22,#Axis tick labels
+#     'ytick.labelsize':22,#Axis tick labels
+#     'legend.fontsize':24,#Legend font size
+#     'font.family':'serif',
+#     'font.fantasy':'xkcd',
+#     'font.sans-serif':'Helvetica',
+#     'font.monospace':'Courier',
+#     #AXIS PROPERTIES
+#     'axes.titlepad':2*6.0,#title spacing from axis
+#     'axes.grid':True,#grid on plot
+#     'figure.figsize':(16,8),#square plots
+#     # 'savefig.bbox':'tight',#reduce whitespace in saved figures#LEGEND PROPERTIES
+#     'legend.framealpha':0.5,
+#     'legend.fancybox':True,
+#     'legend.frameon':True,
+#     'legend.numpoints':1,
+#     'legend.scatterpoints':1,
+#     'legend.borderpad':0.1,
+#     'legend.borderaxespad':0.1,
+#     'legend.handletextpad':0.2,
+#     'legend.handlelength':1.0,
+#     'legend.labelspacing':0,}
+# mpl.rcParams.update(params)
 
-colors = sns.color_palette(palette="bright", n_colors=3)
+# colors = sns.color_palette(palette="bright", n_colors=3)

@@ -24,16 +24,16 @@ import os
 
 # plt.style.use("default")
 # plt.style.use("seaborn-bright")
-airfoil_files = [file_name for file_name in os.listdir("Data/Airfoils")]
+airfoil_files = [file_name for file_name in os.listdir("Data/Airfoils/SelectAirfoils")]
 airfoil_files.sort()
 
 params={#FONT SIZES
-    'axes.labelsize':30,#Axis Labels
-    'axes.titlesize':30,#Title
+    'axes.labelsize':45,#Axis Labels
+    'axes.titlesize':45,#Title
     'font.size':28,#Textbox
-    'xtick.labelsize':22,#Axis tick labels
-    'ytick.labelsize':22,#Axis tick labels
-    'legend.fontsize':24,#Legend font size
+    'xtick.labelsize':30,#Axis tick labels
+    'ytick.labelsize':30,#Axis tick labels
+    'legend.fontsize':30,#Legend font size
     'font.family':'sans-serif',
     'font.fantasy':'xkcd',
     'font.sans-serif':'Helvetica',
@@ -41,8 +41,7 @@ params={#FONT SIZES
     #AXIS PROPERTIES
     'axes.titlepad':2*6.0,#title spacing from axis
     'axes.grid':True,#grid on plot
-    'axes.prop_cycle': mpl.cycler('color', plt.cm.jet(np.linspace(0, 1, len(airfoil_files)))),
-    'figure.figsize':(24,16),#square plots
+    'figure.figsize':(16, 8),#square plots
     # 'savefig.bbox':'tight',#reduce whitespace in saved figures#LEGEND PROPERTIES
     'legend.framealpha':0.5,
     'legend.fancybox':True,
@@ -95,7 +94,7 @@ ambi = amb.Atmosphere(700)
 
 RPM = 4000/3
 
-mass = 2350 - 8 * (49 - 15)
+mass = 2200
 g_0 = 9.81
 
 # 50 m**2 swept
@@ -291,9 +290,15 @@ airfoil_table["T"] /= 1E3
 
 print_col_ind = ["airfoil", "T", "C_T", "Q", "P", "eta_P"]
 
+
 print_col = airfoil_table[print_col_ind]
 
 print_col["Score"] = 2*print_col["C_T"] + print_col["eta_P"]
+
+print_col_ind = ["airfoil", "Score"]
+print_col = print_col[print_col_ind]
+
+
 
 print(print_col.to_latex(float_format="%.3f", index=False))
 print(f"V_0 = {atmos.v_0}")

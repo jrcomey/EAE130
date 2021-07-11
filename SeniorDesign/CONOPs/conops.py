@@ -13,19 +13,18 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
 import copy
-import mplcyberpunk
 
 plt.style.use("default")
 # plt.style.use("seaborn-bright")
 
 
 params={#FONT SIZES
-    'axes.labelsize':30,#Axis Labels
-    'axes.titlesize':30,#Title
-    'font.size':28,#Textbox
-    'xtick.labelsize':22,#Axis tick labels
-    'ytick.labelsize':22,#Axis tick labels
-    'legend.fontsize':24,#Legend font size
+    'axes.labelsize':45,#Axis Labels
+    'axes.titlesize':35,#Title
+    'font.size':20,#Textbox
+    'xtick.labelsize':30,#Axis tick labels
+    'ytick.labelsize':30,#Axis tick labels
+    'legend.fontsize':30,#Legend font size
     'font.family':'sans-serif',
     'font.fantasy':'xkcd',
     'font.sans-serif':'Helvetica',
@@ -33,8 +32,8 @@ params={#FONT SIZES
     #AXIS PROPERTIES
     'axes.titlepad':2*6.0,#title spacing from axis
     'axes.grid':True,#grid on plot
-    'figure.figsize':(8, 8),#square plots
-    'savefig.bbox':'tight',#reduce whitespace in saved figures#LEGEND PROPERTIES
+    'figure.figsize':(16, 10),#square plots
+    # 'savefig.bbox':'tight',#reduce whitespace in saved figures#LEGEND PROPERTIES
     'legend.framealpha':0.5,
     'legend.fancybox':True,
     'legend.frameon':True,
@@ -100,9 +99,7 @@ def plothus(ax, x, y, *, datalabel='', linestyle = '-',
 
 #%%###########################
 
-fig, conops = plt.subplots(
-                            figsize=(32, 16)
-                           )
+fig, conops = plt.subplots()
 
 flightpath = np.array([[0, 0],
                        [5, 0],
@@ -132,7 +129,7 @@ plothusly(conops,
           alt,
            xtitle=r"Mission Time [minutes]",
            ytitle=r"Aircraft Altitude [m]",
-           title=r"Concept of Operations",
+           # title=r"Concept of Operations",
           marker="")
 
 plt.plot(t, alt, color='k')
@@ -140,38 +137,38 @@ plt.plot(t, alt, color='k')
 plt.plot(flightpath2[:, 0], flightpath2[:, 1], linestyle='--', color='black', alpha=0.8)
 
 conops.grid(False)
-
+plt.xlim([-7, 70])
 conops.annotate("Loading",
-                (0, 10))
+                (-2, 12))
 
-conops.annotate("Climb to minimum altitude",
-                (9, 400))
+conops.annotate("Vertical climb to min. altitude",
+                (8, 200))
 
-conops.annotate("Climb to cruise altitude",
-                (-3, 650))
+conops.annotate("Cruise Altitude Climb",
+                (-7, 650))
 
 conops.annotate("Cruise",
-                (20, 670))
+                (17, 770))
 
 conops.annotate("Descent to Minimum Altitude",
-                (28.5, 650))
+                (28, 680))
 
 conops.annotate("Loiter",
-                (31, 550))
+                (30, 560))
 
 conops.annotate("Landing Descent",
-                (40, 400))
+                (41, 300))
 
 conops.annotate("Landed",
                 (46, 10))
 
-conops.annotate("Alternate Airport Options",
-                (46, 610))
+conops.annotate("Alternate Heliport Divert",
+                (35, 610))
 
-conops.annotate("Alternate Landing Approach",
+conops.annotate("Landing Desccent",
                 (61, 300))
 
-conops.annotate("Alternate Landing",
+conops.annotate("Landed",
                 (65, 10))
 
 conops.spines["right"].set_visible(False)

@@ -15,7 +15,7 @@ def RandomizeDronePosition(drone, magnitude, mag_att = 1, mag_att_vel = 0):
     
     for i, _ in enumerate(drone.state_vector):
         if i >= 5:
-            if i <= 8:
+            if i < 8:
                 drone.state_vector[i] = random.uniform(-mag_att, mag_att)
             else:
                 drone.state_vector[i] = random.uniform(-mag_att_vel, mag_att_vel)
